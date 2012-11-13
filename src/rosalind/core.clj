@@ -255,6 +255,13 @@
                                  (difference (set (keys mapg)) #{(first nodos)})))))))
   )
 
+(defn show-grph
+  "Muestra el resultado de grph"
+  [mapa]
+  (print
+   (apply str (for [[k v] mapa :when (not (empty? v))]
+                (apply str (for [i v] (format "%s %s\n" k i)))))))
+
 ;;;;; main 
 (defn -main
   [& args]
