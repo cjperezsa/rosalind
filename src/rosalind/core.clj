@@ -50,9 +50,9 @@
       (assoc mapa (apply str cadena) nombre)
       (let [linea (first lineas)]
         (cond (and (= \> (.charAt linea 0)) (not (= nombre nil)))
-              (recur (rest lineas) (assoc mapa (apply str cadena) nombre) linea [])
+              (recur (rest lineas) (assoc mapa (apply str cadena) nombre) (subs linea 1) [])
               (= \> (.charAt linea 0))
-              (recur (rest lineas) mapa linea cadena)
+              (recur (rest lineas) mapa (subs linea 1) cadena)
               :else
               (recur (rest lineas) mapa nombre (conj cadena linea))))))
   )
@@ -148,7 +148,7 @@
       acum
       (recur (* acum x) (dec i)))))
 
-(defn eval
+(defn eval-motif
   [file]
   (let [txt (slurp file)
         [m n] (map #(Integer. %) (re-seq #"\d+" txt))
@@ -222,7 +222,37 @@
   (let [pt (transpose p)]
     (apply str (for [i pt]
            (nucl-pos (.indexOf i (reduce max i)))))))
-  
+
+;;
+;; GRPH. Overlap graph
+;; utiliza subs-r (find motif in string)
+;; utiliza make-map-gc para construir el mapa de keys,vals
+(defn suffix
+  "sufijo de longitud n de cadena s"
+  [n]
+  (fn [s]
+    (subs s (- (count s) n))))
+
+(defn preffix
+  "prefijo de longitud n de cadena s"
+  [n]
+  (fn [s]
+    (subs s 0 n)))
+
+(defn find-prefixes
+  "devuelve conjunto de strings en s que son sufijos de t, excluido t"
+  [t s]
+  (loop [init (difference #{s} #{t})]
+(defn grph
+  "Calcula la lista de adyacencias de O(3) a partir de mapa"
+  "Para cada nodo (key), construye (val) un conjunto con los nodos que son prefijos del sufijo de key"
+  [mapa]
+  (loop [nodos (keys mapa)
+         adyacentes {}]
+    (if (empty? nodos)
+      adyacentes
+      (recur (rest nodos) (find-prefixes (first nodos) (keys mapa)))))
+  )
 ;;;;; main 
 (defn -main
   [& args]
