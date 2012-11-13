@@ -1,5 +1,6 @@
 (ns rosalind.core)
 (use 'clojure.java.io)
+(use 'clojure.set)
 
 ;; para seguir usando read-lines con clojure 1.4. Ojo que las líneas
 ;; no pueden contener espacios en blanco (en medio)
@@ -239,20 +240,21 @@
   (fn [s]
     (subs s 0 n)))
 
-(defn find-prefixes
-  "devuelve conjunto de strings en s que son sufijos de t, excluido t"
-  [t s]
-  (loop [init (difference #{s} #{t})]
 (defn grph
-  "Calcula la lista de adyacencias de O(3) a partir de mapa"
-  "Para cada nodo (key), construye (val) un conjunto con los nodos que son prefijos del sufijo de key"
-  [mapa]
-  (loop [nodos (keys mapa)
-         adyacentes {}]
+  "A partir del mapa construye los adyacentes O(3) de cada nodo"
+  [mapg]
+  (loop [nodos (keys mapg) adyacentes {}]
     (if (empty? nodos)
       adyacentes
-      (recur (rest nodos) (find-prefixes (first nodos) (keys mapa)))))
+      (recur (rest nodos)
+             (assoc adyacentes (get mapg (first nodos))
+                    (map #(get mapg %)
+                         (filter (fn [item]
+                                   (= ((suffix 3) (first nodos))
+                                      ((preffix 3) item)))
+                                 (difference (set (keys mapg)) #{(first nodos)})))))))
   )
+
 ;;;;; main 
 (defn -main
   [& args]
@@ -267,6 +269,7 @@
    ;;(let [p (profile (matrix file-cons))]
    ;;(println (consensus p))
   ;;(print-profile p))))
-  (do
-    (println (count (perm 3)))
-    (loop [r (perm 3)] (if (empty? r) r (do (apply prn (first r)) (recur (rest r)))))))
+  ;; (do
+  ;;  (println (count (perm 3)))
+  ;;  (loop [r (perm 3)] (if (empty? r) r (do (apply prn (first r)) (recur (rest r)))))))
+  )
