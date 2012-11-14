@@ -262,6 +262,14 @@
    (apply str (for [[k v] mapa :when (not (empty? v))]
                 (apply str (for [i v] (format "%s %s\n" k i)))))))
 
+;; KMP.
+;; Calcula la matriz de fallos de una cadena de DNA
+(defn kmp
+  "Devuelve el array de fallos P(k) de dna"
+  [dna]
+  (into [0]
+        (for [k (range 1 (.length dna))
+)
 ;;;;; main 
 (defn -main
   [& args]
