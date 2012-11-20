@@ -269,7 +269,10 @@
   [dna]
   (into [0]
         (for [k (range 1 (.length dna))
-)
+              j (range 1 k)]
+          
+              )))
+          
 ;;;;; main 
 (defn -main
   [& args]
