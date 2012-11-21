@@ -267,11 +267,14 @@
 (defn kmp
   "Devuelve el array de fallos P(k) de dna"
   [dna]
-  (into [0]
-        (for [k (range 1 (.length dna))
-              j (range 1 k)]
-          
-              )))
+  ;; (into [0]
+        (for [k (range 1 (count dna))
+              s (for [j (range 1 k)
+                    :when (= ((preffix j) dna)
+                             ((suffix j) (subs dna 0 k)))]
+                  j) :let [x (apply max s)] :when (list? s)]
+             x))
+
           
 ;;;;; main 
 (defn -main
