@@ -116,6 +116,14 @@
       (.write wrt (with-out-str
                     (println (apply str (map (fn [e] (str e " ")) x))))))))
 
+(defn write-vec
+  "Escribe en un fichero los resultados de vec"
+  [vec]
+  (with-open [wrt (writer "src/rosalind/vector-out.txt")]
+    (doseq [x vec]
+      (.write wrt (with-out-str
+                    (println (apply str (map (fn [e] (str e " ")) x))))))))
+
 
 ;; PROB. Probabilidad a partir GC, ¿dos iguales?
 (defn cal-prob
@@ -181,6 +189,40 @@
 "UGG" "W"      "CGG" "R"      "AGG" "R"      "GGG" "G"
 })
 
+;; REVP. Locating restriction sites
+(defn revp
+  "Dado una cadena de DNA localiza las posiciones y longitud de cada palíndrome inverso entre 4 y 12 caracteres de longitud"
+  [dna]
+  (for [i (range (count dna))
+        l (range 4 (inc 12))
+        :while (not (> (+ i l) (count dna)))
+        :when (= (subs dna i (+ i l))
+                 (revc (subs dna i (+ i l))))]
+    [(inc i) l])
+        
+  )
+
+;; LCS. Locate longest common substring of the collection
+;;
+;; genera los substrings de mayor longitud y va buscando progresivamente hasta encontrar uno
+;; para en el momento de encontrarlo, si no, busca otro de menor longitud y así sucesivamente
+;;
+;; (lcs (read-lines "src/rosalind/rosalind_lcs.txt"))
+;;
+(defn lcs
+  "Devuelve UNO de los longest common substrings en la colección de cadenas de la entrada (vector de cadenas)"
+  [col]
+  ;; ordena de menor a mayor longitud  y trabaja solamente con los substrings del primero, de mayor a menor
+  (let [shorter (first (sort-by count col))]
+    (for [t (reverse (sort-by count (for [i (range (count shorter))
+                                          l (range (count shorter) 1 -1)
+                                          :when (not (> (+ i l)(count shorter)))]
+                                      (subs shorter i (+ i l)))))
+          ;; t son TODOS los substrings de s de longitud descendiente hasta 2, ordenados de mayor a menor long
+          :while (not (every? (fn [x] (subs-r x t)) col))]
+      t))
+  
+  )
 
 ;; SUBS. Finding a MOTIF in DNA
 (defn subs-r [s t]
@@ -267,13 +309,17 @@
 (defn kmp
   "Devuelve el array de fallos P(k) de dna"
   [dna]
-  ;; (into [0]
+  (into [0]
         (for [k (range 1 (count dna))
-              s (for [j (range 1 k)
-                    :when (= ((preffix j) dna)
-                             ((suffix j) (subs dna 0 k)))]
-                  j) :let [x (apply max s)] :when (list? s)]
-             x))
+              :let [l
+                    (for [j (range 1 k)
+                          :when (= ((preffix j) dna)
+                                   ((suffix j) (subs dna 0 k)))]
+                      j)]
+              ]
+          (if (empty? l)
+            0
+            (apply max l)))))
 
           
 ;;;;; main 
