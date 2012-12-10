@@ -202,6 +202,13 @@
         
   )
 
+;; SUBS. Finding a MOTIF in DNA
+(defn subs-r [s t]
+  (loop [pos (.indexOf s t) array [] ]
+    (if (= pos -1) array
+        (recur (.indexOf s t (inc pos)) (conj array (inc pos)))))
+  )
+
 ;; LCS. Locate longest common substring of the collection
 ;;
 ;; genera los substrings de mayor longitud y va buscando progresivamente hasta encontrar uno
@@ -224,12 +231,6 @@
   
   )
 
-;; SUBS. Finding a MOTIF in DNA
-(defn subs-r [s t]
-  (loop [pos (.indexOf s t) array [] ]
-    (if (= pos -1) array
-        (recur (.indexOf s t (inc pos)) (conj array (inc pos)))))
-  )
 
 ;; CONS. consensus and profile
 (def file-cons "src/rosalind/rosalind_cons.txt")
@@ -303,6 +304,31 @@
   (print
    (apply str (for [[k v] mapa :when (not (empty? v))]
                 (apply str (for [i v] (format "%s %s\n" k i)))))))
+
+;;
+;; IPRB. Mendelian inheritance
+(defn iprb
+  "devuelve probabilidad de entre 3 tipos de organismo...."
+  [k m n]
+  ;; k homozigótico dominantes
+  ;; m heterozigóticos
+  ;; n homozigóticos recesivos
+  (let [todos (+ k m n)
+        todos-1 (dec todos)
+        pK1 (/ k todos)
+        pM1 (/ m todos)
+        pN1 (/ n todos)]
+    (+
+     pK1 ;; un k dominante basta
+     (* pM1 (/ k todos-1)) ;; 1º m 2º k
+     (* 0.25 pM1 (/ (dec m) todos-1)) ;; 1 y 2 m
+     (* 0.25 pM1 (/ n todos-1)) ;; 1º m 2º n
+     (* pN1 (/ k todos-1)) ;; 1º n 2º k
+     (* pN1 (* 0.5 (/ m todos-1))) ;; 1º n 2º m
+     (* pN1 (/ (dec n) todos-1)) ;; 1 y 2 n
+     ))
+        
+  )
 
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
