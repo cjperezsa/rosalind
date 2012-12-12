@@ -1,3 +1,4 @@
+
 (ns rosalind.core)
 (use 'clojure.java.io)
 (use 'clojure.set)
@@ -124,6 +125,12 @@
       (.write wrt (with-out-str
                     (println (apply str (map (fn [e] (str e " ")) x))))))))
 
+;; SUBS. Finding a MOTIF in DNA
+(defn subs-r [s t]
+  (loop [pos (.indexOf s t) array [] ]
+    (if (= pos -1) array
+        (recur (.indexOf s t (inc pos)) (conj array (inc pos)))))
+  )
 
 ;; PROB. Probabilidad a partir GC, ¿dos iguales?
 (defn cal-prob
@@ -202,12 +209,15 @@
         
   )
 
+<<<<<<< HEAD
 ;; SUBS. Finding a MOTIF in DNA
 (defn subs-r [s t]
   (loop [pos (.indexOf s t) array [] ]
     (if (= pos -1) array
         (recur (.indexOf s t (inc pos)) (conj array (inc pos)))))
   )
+=======
+>>>>>>> b22f5155197047f0f5a62a7e1f0f2ca166be25bb
 
 ;; LCS. Locate longest common substring of the collection
 ;;
@@ -221,13 +231,13 @@
   [col]
   ;; ordena de menor a mayor longitud  y trabaja solamente con los substrings del primero, de mayor a menor
   (let [shorter (first (sort-by count col))]
-    (for [t (reverse (sort-by count (for [i (range (count shorter))
+    (first (for [t (reverse (sort-by count (for [i (range (count shorter))
                                           l (range (count shorter) 1 -1)
                                           :when (not (> (+ i l)(count shorter)))]
                                       (subs shorter i (+ i l)))))
           ;; t son TODOS los substrings de s de longitud descendiente hasta 2, ordenados de mayor a menor long
-          :while (not (every? (fn [x] (subs-r x t)) col))]
-      t))
+          :when (every? (fn [x] (not (empty? (subs-r x t)))) col)]
+      t)))
   
   )
 
