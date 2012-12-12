@@ -1,4 +1,3 @@
-
 (ns rosalind.core)
 (use 'clojure.java.io)
 (use 'clojure.set)
@@ -209,16 +208,6 @@
         
   )
 
-<<<<<<< HEAD
-;; SUBS. Finding a MOTIF in DNA
-(defn subs-r [s t]
-  (loop [pos (.indexOf s t) array [] ]
-    (if (= pos -1) array
-        (recur (.indexOf s t (inc pos)) (conj array (inc pos)))))
-  )
-=======
->>>>>>> b22f5155197047f0f5a62a7e1f0f2ca166be25bb
-
 ;; LCS. Locate longest common substring of the collection
 ;;
 ;; genera los substrings de mayor longitud y va buscando progresivamente hasta encontrar uno
@@ -329,13 +318,14 @@
         pM1 (/ m todos)
         pN1 (/ n todos)]
     (+
-     pK1 ;; un k dominante basta
+     (* pK1 (/ (dec k) todos-1)) ;; 1 y 2 k
+     (* pK1 (/ m todos-1)) ;; 1 k y 2 m
+     (* pK1 (/ n todos-1)) ;; 1 k y 2 n
      (* pM1 (/ k todos-1)) ;; 1º m 2º k
-     (* 0.25 pM1 (/ (dec m) todos-1)) ;; 1 y 2 m
-     (* 0.25 pM1 (/ n todos-1)) ;; 1º m 2º n
+     (* 0.75 pM1 (/ (dec m) todos-1)) ;; 1 y 2 m
+     (* 0.5 pM1 (/ n todos-1)) ;; 1º m 2º n
      (* pN1 (/ k todos-1)) ;; 1º n 2º k
-     (* pN1 (* 0.5 (/ m todos-1))) ;; 1º n 2º m
-     (* pN1 (/ (dec n) todos-1)) ;; 1 y 2 n
+     (* 0.5 pN1 (/ m todos-1)) ;; 1º n 2º m
      ))
         
   )
