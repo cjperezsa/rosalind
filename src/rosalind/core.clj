@@ -330,6 +330,21 @@
         
   )
 
+;;
+;; IEV. Calculating expected offspring
+(defn iev
+  "Dados seis enteros positivos entre 1 y 20000 que expresan los pares ... ver en Rosalind"
+  [AA-AA AA-Aa AA-aa Aa-Aa Aa-aa aa-aa]
+  (+
+   (* AA-AA 2)
+   (* AA-Aa 2)
+   (* AA-aa 2)
+   (* Aa-Aa 2 0.75)
+   (* Aa-aa 2 0.5)
+   (* aa-aa 2 0)
+   )
+  )
+
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
 (defn kmp
