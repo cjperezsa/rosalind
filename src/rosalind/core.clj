@@ -345,6 +345,14 @@
    )
   )
 
+;;
+;; LEXF. Enumerating k-mers lexicographically
+(defn lexf
+  "Given a collection of at most 10 symbols defining an ordered alphabet, and a positive integer n (n≤10). Return: All strings of length n that can be formed from the alphabet, ordered lexicographically."
+  [symbols n]
+  (zipmap symbols (iterate inc 1)) ;; crea un mapa {k, v} donde k es la letra y v el peso asignado
+  )
+
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
 (defn kmp
