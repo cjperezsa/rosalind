@@ -307,7 +307,7 @@
 ;;
 ;; IPRB. Mendelian inheritance
 (defn iprb
-  "devuelve probabilidad de entre 3 tipos de organismo...."
+  "devuelve probabilidad de progenie con gen dominante entre 3 tipos de organismo "
   [k m n]
   ;; k homozigótico dominantes
   ;; m heterozigóticos
