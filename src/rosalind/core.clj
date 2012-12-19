@@ -350,9 +350,10 @@
 (defn lexf
   "Given a collection of at most 10 symbols defining an ordered alphabet, and a positive integer n (n≤10). Return: All strings of length n that can be formed from the alphabet, ordered lexicographically."
   [symbols n]
-  (zipmap symbols (iterate inc 1)) ;; crea un mapa {k, v} donde k es la letra y v el peso asignado
+  (let [m (into [] (repeat n symbols))]
+    (for [k (range 0 (Math/pow (count symbols) n))] (apply str (for [l (range 0 n)] ((m l) (mod (int (quot k (Math/pow n (- (dec n) l)))) (count symbols))))))
+    )
   )
-
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
 (defn kmp
