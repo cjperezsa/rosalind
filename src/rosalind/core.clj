@@ -355,6 +355,7 @@
 
 ;;
 ;; LEXF. Enumerating k-mers lexicographically
+;; (write-seq (lexf [\R \K \U \C] 4)) así fue como produje el fichero resultado seq-out.txt
 (defn lexf
   "Given a collection of at most 10 symbols defining an ordered alphabet, and a positive integer n (n≤10). Return: All strings of length n that can be formed from the alphabet, ordered lexicographically."
   [symbols n]
