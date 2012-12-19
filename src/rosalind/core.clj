@@ -124,6 +124,14 @@
       (.write wrt (with-out-str
                     (println (apply str (map (fn [e] (str e " ")) x))))))))
 
+(defn write-seq
+  "Escribe en un fichero los resultados de seq"
+  [seq]
+  (with-open [wrt (writer "src/rosalind/seq-out.txt")]
+    (doseq [x seq]
+      (.write wrt (with-out-str
+                    (println x))))))
+
 ;; SUBS. Finding a MOTIF in DNA
 (defn subs-r [s t]
   (loop [pos (.indexOf s t) array [] ]
