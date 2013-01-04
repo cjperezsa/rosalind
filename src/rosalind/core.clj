@@ -363,6 +363,48 @@
     (for [k (range 0 (Math/pow (count symbols) n))] (apply str (for [l (range 0 n)] ((m l) (mod (int (quot k (Math/pow n (- (dec n) l)))) (count symbols))))))
     )
   )
+
+;;
+;; LONG
+;;
+;; Genome Assembly as Shortest Superstring
+;;
+;; Given: At most 50 DNA strings of equal length not exceeding 1 kbp (which represent reads deriving from the same strand of a single linear chromosome).
+;; The dataset is guaranteed to satisfy the following condition: there exists a unique way to reconstruct the entire chromosome from these reads by gluing together pairs of reads that overlap by more than half their length.
+;; Return: A shortest superstring containing all the given strings (thus corresponding to a reconstructed chromosome).
+
+;; función auxiliar
+(defn notsuffix
+  "De una serie de strings, devuelve los que no son prefijo de ningún otro, al menos en longitud half + 1. long es la longitud de uno cualquiera de los strings, que deben ser iguales"
+  [strings long]
+  (for [pre strings
+        :when (empty?
+               (for [suf strings
+                     :when (and (not (= pre suf))
+                                (not (empty? ;; si hay algún prefijo(pre)=sufijos(suf)
+                                      (for [i (range (/ long 2) long)
+                                            :when (= ((preffix i) pre)
+                                                     ((suffix i) suf))]
+                                        i) ;; lista con las longitudes de prefijo=sufijo
+                                      )))]
+               pre) ;; en esta lista se depositan los que son pre de algún suf
+               )]
+    pre))
+
+;; función auxiliar
+(defn longestpr
+  "Para un string s, devuelve el mayor substring de t para el que pre(t)=suf(s) o nil"
+  [s t]
+  (last
+   (sort-by count
+            (for [i (range 1 (inc (count s)))
+                  :let [x ((preffix i) t)
+                        y ((suffix i) s)]
+                  :when (= x y)]
+              x))))
+   
+
+  
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
 (defn kmp
