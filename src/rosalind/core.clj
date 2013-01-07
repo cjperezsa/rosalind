@@ -391,7 +391,7 @@
                )]
     pre))
 
-;; función auxiliar
+;; función auxiliar para obtener el prefijo/sufijo de dos strings
 (defn longestpr
   "Para un string s, devuelve el mayor substring de t para el que pre(t)=suf(s) o nil"
   [s t]
@@ -402,8 +402,29 @@
                         y ((suffix i) s)]
                   :when (= x y)]
               x))))
-   
 
+;; f auxiliar, obtiene el string de coll con mayor prefijo de s
+(defn longest-from
+  [s coll]
+  (last
+   (sort-by (fn [item] (count (longestpr s item)))
+            coll)))
+            
+  
+(defn long-assembly
+  "Utilizando las dos funciones auxiliares anteriores, va localizando sucesivamente los strings ensamblables según pre=suf"
+  [strings]
+  (let [init (first (notsuffix strings (count (strings 0))))] ;; localiza el primer string
+    (loop [assembly init
+           actual init ;; string localizado como siguiente sobre el que buscar prefijo
+           toexplore (into [] (disj (set strings) init))] ;; partimos de todos menos el localizado
+      (if (empty? toexplore)
+        assembly
+        (let [next (longest-from actual toexplore)]
+          (recur (clojure.string/replace assembly (longestpr actual next) next)
+                 next
+                 (into [] (disj (set toexplore) next))))))))
+         
   
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
