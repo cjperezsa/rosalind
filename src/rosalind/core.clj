@@ -1,4 +1,5 @@
-(ns rosalind.core)
+(ns rosalind.core
+  (:require [clj-http.client :as client]))
 (use 'clojure.java.io)
 (use 'clojure.set)
 
@@ -425,7 +426,22 @@
                  next
                  (into [] (disj (set toexplore) next))))))))
          
-  
+;; MPRT.
+;; Finding a Protein Motif
+;; Given: At most 15 UniProt Protein Database access IDs.
+;; Return: For each protein possessing the N-glycosylation motif, output its given access ID followed by a list of locations in the protein string where the motif can be found.
+;; To allow for the presence of its varying forms, a protein motif is represented by a shorthand as follows: [XY] means "either X or Y" and {X} means "any amino acid except X." For example, the N-glycosylation motif is written as N{P}[ST]{P}.
+
+;; función auxiliar para obtener la cadena en formato FASTA desde UniProt. Devuelve una entrada tipo mapa (key,val)
+(defn getfasta
+  [id]
+  (let [lineas (re-seq #"[\S ]+" ;; separa las líneas (incluye espacios en blanco)
+                       (:body (client/get
+                               (str (last (:trace-redirects (client/get (str "http://www.uniprot.org/uniprot/" id)))) ".fasta"))))]
+    {(second ;; la key es el segundo string de la primera línea
+      (clojure.string/split (first lineas) #"\|"))
+     (apply str (rest lineas))}))
+
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
 (defn kmp
