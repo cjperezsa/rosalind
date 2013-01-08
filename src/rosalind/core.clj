@@ -442,6 +442,17 @@
       (clojure.string/split (first lineas) #"\|"))
      (apply str (rest lineas))}))
 
+;; devuelve un mapa donde key es el access id y los valores la lista de posiciones en las que se encuentra el motif
+(defn mprt
+  [ids] ;; UniProt access ids
+  (for [e (map getfasta ids)
+        :let [k (apply key e)
+              v (apply val e)
+              posiciones (map #(inc (.indexOf v %)) (re-seq  #"N[^P][ST][^P]" v))]
+        :when posiciones]
+    {k posiciones}))
+
+  
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
 (defn kmp
