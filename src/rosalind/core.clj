@@ -448,7 +448,7 @@
   (for [e (map getfasta ids)
         :let [k (apply key e)
               v (apply val e)
-              posiciones (map #(inc (.indexOf v %)) (re-seq  #"N[^P][ST][^P]" v))]
+              posiciones (map #(inc (.indexOf v %)) (re-seq  #"N{1}[^P][S|T][^P]" v))]
         :when posiciones]
     {k posiciones}))
 
