@@ -438,12 +438,12 @@
   (let [lineas (re-seq #"[\S ]+" ;; separa las líneas (incluye espacios en blanco)
                        (:body (client/get
                                (str (last (:trace-redirects (client/get (str "http://www.uniprot.org/uniprot/" id)))) ".fasta"))))]
-    {(second ;; la key es el segundo string de la primera línea
-      (clojure.string/split (first lineas) #"\|"))
+    {id ;; la key sigue siendo el id original
      (apply str (rest lineas))}))
 
 ;; devuelve un mapa donde key es el access id y los valores la lista de posiciones en las que se encuentra el motif
-(defn mprt
+;; esta función no descubre los patrones 'solapados'
+(defn mprt-1
   [ids] ;; UniProt access ids
   (for [e (map getfasta ids)
         :let [k (apply key e)
@@ -452,6 +452,23 @@
         :when posiciones]
     {k posiciones}))
 
+(defn submotifs
+  "Devuelve secuencia de patrones re localizados y solapados en string s de longitud n"
+  [s re n]
+  (for [i (range n)
+        t (partition n (subs s i))
+        :let [p (re-find re (apply str t))]
+        :when p]
+    p))
+  
+(defn mprt
+  [ids]
+  (for [e (map getfasta ids)
+        :let [k (apply key e)
+              v (apply val e)
+              posiciones (map #(inc (.indexOf v %)) (submotifs v #"N[^P][S|T][^P]" 4)) ]
+        :when (not (empty? posiciones))]
+    {k (sort posiciones)}))
   
 ;; KMP.
 ;; Calcula la matriz de fallos de una cadena de DNA
